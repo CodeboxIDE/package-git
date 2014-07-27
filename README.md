@@ -1,4 +1,3 @@
-package-git
-===========
+# GIT commands
 
-Git commands inside the IDE
+This package contains git commands.

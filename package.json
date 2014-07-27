@@ -1,0 +1,15 @@
+{
+    "name": "git",
+    "version": "0.0.0",
+    "description": "Git commands",
+    "main": "src/index",
+    "node": "lib/main",
+    "engines": {
+        "codebox": ">=1.0.0"
+    },
+    "packageDependencies": {},
+    "dependencies": {
+        "lodash": "2.4.1",
+        "gittle": "0.2.2"
+    }
+}
