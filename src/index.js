@@ -5,13 +5,14 @@ define([
     var commands = codebox.require("core/commands");
     var dialogs = codebox.require("utils/dialogs");
 
-    var cmdBranchSwitch, cmdInit;
+    var cmdBranchSwitch, cmdBranchCreate, cmdInit;
 
     // Toggle commands that need git to be ok
     var toggleStatus = function(state) {
         _.invoke([
-            cmdBranchSwitch
+            cmdBranchSwitch, cmdBranchCreate
         ], "set", "hidden", !state);
+
         _.invoke([
             cmdInit
         ], "set", "hidden", state);
@@ -52,7 +53,25 @@ define([
                     {
                         prefix: "Checkout '"+branch.get("name")+"'"
                     }
-                );
+                ).fail(dialogs.error);
+            });
+        }
+    });
+
+    cmdBranchCreate = commands.register({
+        id: "git.branch.create",
+        title: "Git: Create New Branch",
+        run: function(args, context) {
+            return dialogs.prompt("Create a branch")
+            .then(function(branch) {
+                return codebox.statusbar.loading(
+                    rpc.execute("git/branch_create", {
+                        'name': branch
+                    }),
+                    {
+                        prefix: "Creating branch '"+branch+"'"
+                    }
+                ).fail(dialogs.error);
             });
         }
     });
