@@ -7,7 +7,10 @@
     "engines": {
         "codebox": ">=1.0.0"
     },
-    "packageDependencies": {},
+    "packageDependencies": {
+        "settings": "CodeboxIDE/package-settings",
+        "statusbar": "CodeboxIDE/package-statusbar"
+    },
     "dependencies": {
         "lodash": "2.4.1",
         "gittle": "0.2.2"

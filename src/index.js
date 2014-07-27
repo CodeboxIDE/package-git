@@ -1,6 +1,9 @@
-define(function(Manager) {
+define([
+    "text!src/templates/branch.html"
+], function(templateBranch) {
     var rpc = codebox.require("core/rpc");
     var commands = codebox.require("core/commands");
+    var dialogs = codebox.require("utils/dialogs");
 
     var cmdBranchSwitch, cmdInit;
 
@@ -30,7 +33,27 @@ define(function(Manager) {
         id: "git.branch.change",
         title: "Git: Switch To Branch",
         run: function(args, context) {
-
+            return codebox.statusbar.loading(
+            rpc.execute("git/branches"),
+            {
+                prefix: "Listing branches"
+            })
+            .fail(dialogs.error)
+            .then(function(branches) {
+                return dialogs.list(branches, {
+                    template: templateBranch
+                })
+            })
+            .then(function(branch) {
+                return codebox.statusbar.loading(
+                    rpc.execute("git/checkout", {
+                        'ref': branch.get("name")
+                    }),
+                    {
+                        prefix: "Checkout '"+branch.get("name")+"'"
+                    }
+                );
+            });
         }
     });
 
