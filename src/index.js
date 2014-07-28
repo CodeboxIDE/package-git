@@ -2,6 +2,7 @@ define([
     "src/settings",
     "text!src/templates/branch.html"
 ], function(settings, templateBranch) {
+    var Q = codebox.require("hr/promise");
     var rpc = codebox.require("core/rpc");
     var commands = codebox.require("core/commands");
     var dialogs = codebox.require("utils/dialogs");
@@ -22,10 +23,12 @@ define([
     // Check git status
     var updateStatus = function(p) {
         return (p || rpc.execute("git/status"))
-        .then(function() {
+        .then(function(d) {
             toggleStatus(true);
+            return d;
         }, function(err) {
             toggleStatus(false);
+            return Q.reject(err);
         })
     };
 
@@ -194,7 +197,7 @@ define([
         run: function() {
             return codebox.statusbar.loading(
                 handleHttpAuth(function(creds) {
-                    return updateStatus(rpc.execute("git/push"));
+                    return rpc.execute("git/push");
                 }),
                 {
                     prefix: "Pushing"
@@ -209,7 +212,7 @@ define([
         run: function() {
             return codebox.statusbar.loading(
                 handleHttpAuth(function(creds) {
-                    return updateStatus(rpc.execute("git/pull"));
+                    return rpc.execute("git/pull");
                 }),
                 {
                     prefix: "Pulling"
@@ -224,7 +227,7 @@ define([
         run: function() {
             return codebox.statusbar.loading(
                 handleHttpAuth(function(creds) {
-                    return updateStatus(rpc.execute("git/sync"));
+                    return rpc.execute("git/sync");
                 }),
                 {
                     prefix: "Syncing (pull & push)"
