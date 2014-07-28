@@ -6,12 +6,12 @@ define([
     var commands = codebox.require("core/commands");
     var dialogs = codebox.require("utils/dialogs");
 
-    var cmdBranchSwitch, cmdBranchCreate, cmdInit, cmdClone, cmdCommit;
+    var cmdBranchSwitch, cmdBranchCreate, cmdInit, cmdClone, cmdCommit, cmdPush, cmdSync;
 
     // Toggle commands that need git to be ok
     var toggleStatus = function(state) {
         _.invoke([
-            cmdBranchSwitch, cmdBranchCreate, cmdCommit
+            cmdBranchSwitch, cmdBranchCreate, cmdCommit, cmdPush, cmdPull, cmdSync
         ], "set", "hidden", !state);
 
         _.invoke([
@@ -188,6 +188,50 @@ define([
         }
     });
 
+    cmdPush = commands.register({
+        id: "git.push",
+        title: "Git: Push",
+        run: function() {
+            return codebox.statusbar.loading(
+                handleHttpAuth(function(creds) {
+                    return updateStatus(rpc.execute("git/push"));
+                }),
+                {
+                    prefix: "Pushing"
+                }
+            ).fail(dialogs.error);
+        }
+    });
+
+    cmdPull = commands.register({
+        id: "git.pull",
+        title: "Git: Pull",
+        run: function() {
+            return codebox.statusbar.loading(
+                handleHttpAuth(function(creds) {
+                    return updateStatus(rpc.execute("git/pull"));
+                }),
+                {
+                    prefix: "Pulling"
+                }
+            ).fail(dialogs.error);
+        }
+    });
+
+    cmdSync = commands.register({
+        id: "git.sync",
+        title: "Git: Sync",
+        run: function() {
+            return codebox.statusbar.loading(
+                handleHttpAuth(function(creds) {
+                    return updateStatus(rpc.execute("git/sync"));
+                }),
+                {
+                    prefix: "Syncing (pull & push)"
+                }
+            ).fail(dialogs.error);
+        }
+    });
 
     updateStatus();
 });
