@@ -1,18 +1,20 @@
 define([
     "src/settings",
-    "text!src/templates/branch.html"
-], function(settings, templateBranch) {
+    "text!src/templates/branch.html",
+    "text!src/templates/file.html"
+], function(settings, templateBranch, templateFile) {
     var Q = codebox.require("hr/promise");
     var rpc = codebox.require("core/rpc");
     var commands = codebox.require("core/commands");
     var dialogs = codebox.require("utils/dialogs");
 
-    var cmdBranchSwitch, cmdBranchCreate, cmdInit, cmdClone, cmdCommit, cmdPush, cmdSync;
+    var cmdBranchSwitch, cmdBranchCreate, cmdInit, cmdClone, cmdCommit, cmdPush, cmdSync, cmdStatus;
 
     // Toggle commands that need git to be ok
     var toggleStatus = function(state) {
         _.invoke([
-            cmdBranchSwitch, cmdBranchCreate, cmdCommit, cmdPush, cmdPull, cmdSync
+            cmdBranchSwitch, cmdBranchCreate, cmdCommit, cmdPush, cmdPull, cmdSync,
+            cmdStatus
         ], "set", "hidden", !state);
 
         _.invoke([
@@ -190,6 +192,33 @@ define([
             });
         }
     });
+
+    ///// Status
+
+    cmdStatus = commands.register({
+        id: "git.status",
+        title: "Git: Status",
+        run: function() {
+            return updateStatus()
+            .fail(dialogs.error)
+            .then(function(status) {
+                var files = _.map(status.files, function(st, fileName) {
+                    return {
+                        'status': st,
+                        'filename': fileName
+                    }
+                });
+
+                if (files.length == 0) return dialogs.alert("nothing to commit, working directory clean");
+
+                return dialogs.list(files, {
+                    template: templateFile
+                })
+            });
+        }
+    });
+
+    ///// Remote sync
 
     cmdPush = commands.register({
         id: "git.push",
