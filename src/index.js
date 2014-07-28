@@ -8,7 +8,7 @@ define([
     var commands = codebox.require("core/commands");
     var dialogs = codebox.require("utils/dialogs");
 
-    var cmdBranchSwitch, cmdBranchCreate, cmdInit, cmdClone, cmdCommit, cmdPush, cmdSync, cmdStatus;
+    var cmdBranchSwitch, cmdBranchCreate, cmdBranchDelete, cmdInit, cmdClone, cmdCommit, cmdPush, cmdSync, cmdStatus;
 
     // Toggle commands that need git to be ok
     var toggleStatus = function(state) {
@@ -73,23 +73,28 @@ define([
         })
     };
 
-    ///// branches
+    ///// Branches
+
+    var selectBranch = function() {
+        return codebox.statusbar.loading(
+            rpc.execute("git/branches"),
+            {
+                prefix: "Listing branches"
+            }
+        )
+        .fail(dialogs.error)
+        .then(function(branches) {
+            return dialogs.list(branches, {
+                template: templateBranch
+            })
+        });
+    };
 
     cmdBranchSwitch = commands.register({
         id: "git.branch.change",
         title: "Git: Switch To Branch",
         run: function(args, context) {
-            return codebox.statusbar.loading(
-            rpc.execute("git/branches"),
-            {
-                prefix: "Listing branches"
-            })
-            .fail(dialogs.error)
-            .then(function(branches) {
-                return dialogs.list(branches, {
-                    template: templateBranch
-                })
-            })
+            return selectBranch()
             .then(function(branch) {
                 return codebox.statusbar.loading(
                     rpc.execute("git/checkout", {
@@ -115,6 +120,24 @@ define([
                     }),
                     {
                         prefix: "Creating branch '"+branch+"'"
+                    }
+                ).fail(dialogs.error);
+            });
+        }
+    });
+
+    cmdBranchDelete = commands.register({
+        id: "git.branch.delete",
+        title: "Git: Delete a Branch",
+        run: function(args, context) {
+            return selectBranch()
+            .then(function(branch) {
+                return codebox.statusbar.loading(
+                    rpc.execute("git/branch_delete", {
+                        'name': branch.get("name")
+                    }),
+                    {
+                        prefix: "Removing '"+branch.get("name")+"'"
                     }
                 ).fail(dialogs.error);
             });
