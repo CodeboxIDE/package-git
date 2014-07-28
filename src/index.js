@@ -171,7 +171,7 @@ define([
                         default: "*"
                     }
                 }
-            })
+            }, args)
             .then(function(infos) {
                 infos.name = settings.data.get("name");
                 infos.email = settings.data.get("email");
@@ -214,6 +214,11 @@ define([
                 return dialogs.list(files, {
                     template: templateFile
                 })
+                .then(function(file) {
+                    return cmdCommit.run({
+                        files: file.get("filename")
+                    });
+                });
             });
         }
     });
