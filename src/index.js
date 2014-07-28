@@ -6,12 +6,12 @@ define([
     var commands = codebox.require("core/commands");
     var dialogs = codebox.require("utils/dialogs");
 
-    var cmdBranchSwitch, cmdBranchCreate, cmdInit, cmdClone;
+    var cmdBranchSwitch, cmdBranchCreate, cmdInit, cmdClone, cmdCommit;
 
     // Toggle commands that need git to be ok
     var toggleStatus = function(state) {
         _.invoke([
-            cmdBranchSwitch, cmdBranchCreate
+            cmdBranchSwitch, cmdBranchCreate, cmdCommit
         ], "set", "hidden", !state);
 
         _.invoke([
@@ -141,6 +141,47 @@ define([
                     }),
                     {
                         prefix: "Cloning repository"
+                    }
+                ).fail(dialogs.error);
+            });
+        }
+    });
+
+    ///// Commit
+
+    cmdCommit = commands.register({
+        id: "git.commit",
+        title: "Git: Commit Changes",
+        run: function(args, context) {
+            return dialogs.schema({
+                title: "Commit Changes:",
+                properties: {
+                    message: {
+                        description: "Message:",
+                        type: "string"
+                    },
+                    files: {
+                        description: "Files (paths separeated by coma, * for all changes)",
+                        type: "string",
+                        default: "*"
+                    }
+                }
+            })
+            .then(function(infos) {
+                infos.name = settings.data.get("name");
+                infos.email = settings.data.get("email");
+
+                if (infos.files == "*") {
+                    infos.files = [];
+                } else {
+                    infos.files = infos.files.split(",");
+                }
+
+
+                return codebox.statusbar.loading(
+                    rpc.execute("git/commit", infos),
+                    {
+                        prefix: "Commiting"
                     }
                 ).fail(dialogs.error);
             });
