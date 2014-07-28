@@ -8,7 +8,6 @@
         "codebox": ">=1.0.0"
     },
     "packageDependencies": {
-        "settings": "CodeboxIDE/package-settings",
         "statusbar": "CodeboxIDE/package-statusbar"
     },
     "dependencies": {
