@@ -14,7 +14,7 @@ define([
     var toggleStatus = function(state) {
         _.invoke([
             cmdBranchSwitch, cmdBranchCreate, cmdCommit, cmdPush, cmdPull, cmdSync,
-            cmdStatus
+            cmdStatus, cmdBranchDelete
         ], "set", "hidden", !state);
 
         _.invoke([
