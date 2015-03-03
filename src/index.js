@@ -1,8 +1,9 @@
 define([
     "src/settings",
+    "src/menu",
     "text!src/templates/branch.html",
     "text!src/templates/file.html"
-], function(settings, templateBranch, templateFile) {
+], function(settings, initMenu, templateBranch, templateFile) {
     var Q = codebox.require("hr/promise");
     var rpc = codebox.require("core/rpc");
     var commands = codebox.require("core/commands");
@@ -294,4 +295,5 @@ define([
     });
 
     updateStatus();
+    initMenu();
 });
