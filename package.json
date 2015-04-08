@@ -2,8 +2,8 @@
     "name": "git",
     "version": "0.0.0",
     "description": "Git commands",
-    "main": "src/index",
-    "node": "lib/main",
+    "browser": "./src/index.js",
+    "main": "./lib/main.js",
     "engines": {
         "codebox": ">=1.0.0"
     },
@@ -13,5 +13,14 @@
     "dependencies": {
         "lodash": "3.x.x || 2.4.x",
         "gittle": "~0.2.3"
+    },
+    "browserify": {
+        "transform": [
+            [
+                "stringify", {
+                    "extensions": [".html"]
+                }
+            ]
+        ]
     }
 }
