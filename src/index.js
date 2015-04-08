@@ -4,6 +4,7 @@ var templateBranch = require("./templates/branch.html");
 var templateFile = require("./templates/file.html");
 
 var Q = codebox.require("q");
+var _ = codebox.require("hr.utils");
 var rpc = codebox.require("core/rpc");
 var commands = codebox.require("core/commands");
 var dialogs = codebox.require("utils/dialogs");
