@@ -1,5 +1,4 @@
 var settings = require("./settings");
-var initMenu = require("./menu");
 var templateBranch = require("./templates/branch.html");
 var templateFile = require("./templates/file.html");
 
@@ -16,11 +15,11 @@ var toggleStatus = function(state) {
     _.invoke([
         cmdBranchSwitch, cmdBranchCreate, cmdCommit, cmdPush, cmdPull, cmdSync,
         cmdStatus, cmdBranchDelete
-    ], "set", "hidden", !state);
+    ], "set", "enabled", state);
 
     _.invoke([
         cmdInit, cmdClone
-    ], "set", "hidden", state);
+    ], "set", "enabled", !state);
 };
 
 // Check git status
@@ -294,5 +293,50 @@ cmdSync = commands.register({
     }
 });
 
+codebox.menubar.createMenu({
+    id: "git",
+    caption: "Repository",
+    items: [
+        {
+            caption: "Init Repository",
+            command: "git.init"
+        },
+        {
+            caption: "Clone Repository",
+            command: "git.clone"
+        },
+        { type: "separator" },
+        {
+            caption: "Commit Changes",
+            command: "git.commit"
+        },
+        {
+            caption: "Status",
+            command: "git.status"
+        },
+        { type: "separator" },
+        {
+            caption: "Push Changes",
+            command: "git.push"
+        },
+        {
+            caption: "Pull Changes",
+            command: "git.pull"
+        },
+        { type: "separator" },
+        {
+            caption: "Switch Branch...",
+            command: "git.branch.change"
+        },
+        {
+            caption: "Create New Branch",
+            command: "git.branch.create"
+        },
+        {
+            caption: "Delete a Branch",
+            command: "git.branch.delete"
+        }
+    ]
+});
+
 updateStatus();
-initMenu();
