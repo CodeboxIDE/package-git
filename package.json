@@ -12,7 +12,8 @@
     },
     "dependencies": {
         "lodash": "3.x.x || 2.4.x",
-        "gittle": "~0.2.3"
+        "gittle": "~0.2.3",
+        "stringify": "3.1.0"
     },
     "browserify": {
         "transform": [
