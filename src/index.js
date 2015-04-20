@@ -295,7 +295,7 @@ cmdSync = commands.register({
 
 codebox.menubar.createMenu({
     id: "git",
-    caption: "Repository",
+    caption: "GIT Repository",
     items: [
         {
             caption: "Init Repository",
