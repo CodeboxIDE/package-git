@@ -8,6 +8,7 @@
         "codebox": ">=1.0.0-alpha"
     },
     "packageDependencies": {
+        "menubar": "CodeboxIDE/package-menubar",
         "statusbar": "CodeboxIDE/package-statusbar"
     },
     "dependencies": {
